@@ -16,24 +16,13 @@ public class RabbitConsumer {
     }
 
 
-    @RabbitListener(queues = "${rabbitmq.queue.a}")
+    @RabbitListener(queues = {"${rabbitmq.queue.a}"
+            , "${rabbitmq.queue.b}"
+            , "${rabbitmq.queue.c}"
+            , "${rabbitmq.queue.d}"})
     public void receiveFromAppleQueue(String message) {
-        LOGGER.info(String.format("Received message from appleQueue : -> %s", message));
+        LOGGER.info(String.format("Received message from fan-out exchange : -> %s", message));
     }
 
-    @RabbitListener(queues = "${rabbitmq.queue.b}")
-    public void receiveFromBasketQueue(String message) {
-        LOGGER.info(String.format("Received message from basketQueue : -> %s", message));
-    }
-
-    @RabbitListener(queues = "${rabbitmq.queue.c}")
-    public void receiveFromCatQueue(String message) {
-        LOGGER.info(String.format("Received message from catQueue : -> %s", message));
-    }
-
-    @RabbitListener(queues = "${rabbitmq.queue.d}")
-    public void receiveFromDogQueue(String message) {
-        LOGGER.info(String.format("Received message from dogQueue : -> %s", message));
-    }
 
 }

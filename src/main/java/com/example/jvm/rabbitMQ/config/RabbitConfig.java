@@ -17,63 +17,62 @@ public class RabbitConfig {
     @Value("${rabbitmq.topic.exchange.name}")
     private String topicExchange;
 
-
     @Value("${rabbitmq.routing.key}")
     private String routingKey;
 
+
     @Bean
-    public Queue queue(){
+    public Queue queue() {
         return new Queue(queueName);
     }
 
-
     @Bean
-    public TopicExchange topicExchange(){
+    public TopicExchange topicExchange() {
         return new TopicExchange(topicExchange);
     }
 
     @Bean
-    public Binding binding(){
+    public Binding binding() {
         return BindingBuilder.bind(queue()).to(topicExchange()).with(routingKey);
     }
 
-
-    // Fan-out exchange
-
     @Value("${rabbitmq.fanout.exchange.name}")
     private String fanoutExchange;
-
     @Value("${rabbitmq.queue.a}")
     private String appleQueue;
     @Value("${rabbitmq.queue.b}")
     private String basketQueue;
+
     @Value("${rabbitmq.queue.c}")
     private String catQueue;
     @Value("${rabbitmq.queue.d}")
     private String dogQueue;
 
-
     @Bean
     public Queue appleQueue() {
         return new Queue(appleQueue);
     }
+
     @Bean
     public Queue basketQueue() {
         return new Queue(basketQueue);
     }
+
     @Bean
     public Queue catQueue() {
         return new Queue(catQueue);
     }
+
     @Bean
     public Queue dogQueue() {
         return new Queue(dogQueue);
     }
 
     @Bean
-    public FanoutExchange fanoutExchange(){
+    public FanoutExchange fanoutExchange() {
         return new FanoutExchange(fanoutExchange);
     }
+
     @Bean
     public List<Binding> bindings() {
         List<Binding> bindings = new ArrayList<>();
@@ -86,7 +85,25 @@ public class RabbitConfig {
         return bindings;
     }
 
+    @Value("${rabbitmq.header.exchange.name}")
+    private String headerExchange;
 
+
+    @Bean
+    public HeadersExchange headerExchange() {
+        return new HeadersExchange(headerExchange);
+    }
+    @Bean
+    public List<Binding> headerBindings() {
+        List<Binding> bindings = new ArrayList<>();
+
+        bindings.add(BindingBuilder.bind(appleQueue()).to(headerExchange()).where("queue").matches("apple"));
+        bindings.add(BindingBuilder.bind(basketQueue()).to(headerExchange()).where("queue").matches("basket"));
+        bindings.add(BindingBuilder.bind(catQueue()).to(headerExchange()).where("queue").matches("cat"));
+        bindings.add(BindingBuilder.bind(dogQueue()).to(headerExchange()).where("queue").matches("dog"));
+
+        return bindings;
+    }
 
 }
 
